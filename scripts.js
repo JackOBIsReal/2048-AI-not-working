@@ -379,6 +379,7 @@ var AIscore = 0;
 var AIexcludeIds = [];
 var AIRun = 0;
 var AITimer = 0;
+var game;
 
 {//AI wants to play too
 	function AIup() {
@@ -392,7 +393,8 @@ var AITimer = 0;
 		}
 	}
 	if(AIisMoved == true) {
-		AIupdate(0);
+		var lol = 0;
+		AIupdate(lol);
 	}
 	return false;
 }
@@ -438,7 +440,7 @@ function AIleft() {
 	}
 	return false;
 }
-function AImoveLeft(id) {
+function AImoveLeft(i, j) {
 	if(j != min) {
 		for(var k=(j-1);k>=min;k--) {
 			if(game[i][k] != "") {
@@ -479,7 +481,7 @@ function AIdown() {
 	}
 	return false;
 }
-function AImoveDown(id) {
+function AImoveDown(i, j) {
 	if(i != max) {
 		for(var k=(i+1);k<=max;k++) {
 			if(game[k][j] != "") {
@@ -555,7 +557,9 @@ function AImoveRight(id) {
 				}
 			}
 		}
-		var id = ids[Math.floor(Math.random()*ids.length)];
+		var klm = Math.floor(Math.random()*ids.length);
+		var id = ids[klm];
+		console.log(id + " " + klm);
 		var lol = id.split('');
 		game[lol[0]][lol[1]] = "2";
 
@@ -572,6 +576,7 @@ function AImoveRight(id) {
 		if(allFilled) {
 			AIcheckGameOver();
 		}
+		if(AIResults[AIRun] === undefined){AIResults.push([[]]);}
 		AIResults[AIRun][0].push(direction);
 	}
 function AIcheckGameOver() {
@@ -627,7 +632,7 @@ function AIButtonPress() {
 	if(AIActive == false) {
 		AIActive = true;
 		AIButton.firstChild.data = "Stop AI";
-		setTimeout(AIRunNow(), 1000);
+		AIRunNow();
 	}
 	else {
 		AIActive = false;
@@ -649,10 +654,7 @@ function AIRunNow() {
 	if(AIActive == true) { //If I change this to a while - loop, nothing happens on the site and chrome tells me "site not responding"
 		var n = h.getTime();
 		var j = h.getTime();
-		
-		
-		//AI();              //If I call this function, nothing happens on the site and chrome tells me "site not responding"
-		
+		AI();              //If I call this function, nothing happens on the site and chrome tells me "site not responding"
 		var difference = h.getTime() - j;
 		document.getElementById("turnInfo").innerHTML = "Average time per turn: " + difference + " milliseconds";
 	}
@@ -664,31 +666,32 @@ function AI() {
 	for(e = 0; e <= tpt; e++){
 		AITimer = 0;
 		AIRun++;
-		var game = start;
+		game = start;
 		//randomly change the temporary chances a bit and select a Move
 		var tmpchance = chance;
 		for(g = 0; g < 4; g++) {
 			var value = tmpchance[g] / 10;
 			if(Math.random() <= 0.5){
 				tmpchance[g] -= value;
-				for (h = 0; h < 4; h++) {
-					if(h = g){continue}
+				for (h == 0; h < 4; h++) {
+					if(h == g){continue}
 					else{tmpchance[h] += value / 3; } 
 				}
 			}
 			else{
 				tmpchance[g] += value;
-				for (h = 0; h < 4; h++) {
-					if(h = g){}
+				for (h == 0; h < 4; h++) {
+					if(h == g){}
 					else{tmpchance[h] -= value / 3; } 
 				}
 			}
 		}
 		var Random = Math.random();
-		if(Random >= 0 && Random <= tmpchance[0]) {AIup();}
-		if(Random >= tmpchance[0] && Random <= tmpchance[1]) {AIdown();}
-		if(Random >= tmpchance[1] && Random <= tmpchance[2]) {AIleft();}
-		if(Random >= tmpchance[2] && Random <= tmpchance[3]) {AIright();}
+		AIdown();
+//		if(Random >= 0 && Random <= tmpchance[0]) {AIup();}
+//		if(Random >= tmpchance[0] && Random <= tmpchance[1]) {AIdown();}
+//		if(Random >= tmpchance[1] && Random <= tmpchance[2]) {AIleft();}
+//		if(Random >= tmpchance[2] && Random <= tmpchance[3]) {AIright();}
 	}
 	//analyse the AITurns and change chances
 	var newChance = [0, 0, 0, 0];
